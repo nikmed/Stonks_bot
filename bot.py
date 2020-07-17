@@ -77,9 +77,8 @@ def request(symbol):
 
 """scheduler = Process(target = send_schedule_message, args = ())
 scheduler.start()"""
-while True:
-	try:
-		bot.polling()
-	except Exception as e:
-		print(e)
-		time.sleep(60)
+"""while True:"""
+try:
+	bot.polling()
+except Exception as e:
+	print(e)
