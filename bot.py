@@ -31,7 +31,6 @@ def stop(message):
 def settings(message):
 	pass
 
-
 @bot.message_handler(commands=['delete'])
 def delete_company(message):
 	if (len(message.text.split()) <= 1):
@@ -55,10 +54,10 @@ def schedule_tune(message):
 	if message.text == 'Никогда':
 		bot.send_message(message.chat.id, '', reply_markup = markup)
 	elif message.text == '1 раз в день':
-		msg = bot.send_message(message.chat.id, 'В какое время ты хочешь получать уведомления. Пиши в формате **:**', reply_markup = markup)
+		msg = bot.send_message(message.chat.id, 'В какое время ты хочешь получать уведомления. Пиши в формате HH:MM', reply_markup = markup)
 		bot.register_next_step_handler(msg, date_tune)
 	elif message.text == '2 раза в день':
-		msg = bot.send_message(message.chat.id, 'В какое время ты хочешь получать уведомления. Пиши в формате **:** **:**', reply_markup = markup)
+		msg = bot.send_message(message.chat.id, 'В какое время ты хочешь получать уведомления. Пиши в формате HH:MM HH:MM', reply_markup = markup)
 		bot.register_next_step_handler(msg, date_tune)
 	else:
 		msg = bot.send_message(message.chat.id, 'Прости я тебя не понимаю. Попробуй еще раз.', reply_markup = markup)
@@ -75,11 +74,13 @@ def date_tune(message):
 			db.insert_date(message.chat.id, str(res[0]) + ' ' + str(res[1]))
 			bot.send_message(message.chat.id, 'Время добавлено')
 	else:
-		msg = bot.send_message(message.chat.id, 'Я тебя не понял. Попробуй еще раз. Пиши в формате **:**')
+		msg = bot.send_message(message.chat.id, 'Я тебя не понял. Попробуй еще раз. Пиши в формате HH:MM')
 		bot.register_next_step_handler(msg, date_tune)
 
 
-
+@bot.message_handler(regexp = "\/\w+")
+def func_handler(message):
+	print(message.text)
 
 
 @bot.message_handler(content_types=['text'])
@@ -103,9 +104,6 @@ def send_text(message):
 def callback_worker(call):
 	global user_id
 	db.insert_company(user_id, call.data)
-
-
-
 
 
 def request(symbol):

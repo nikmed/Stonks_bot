@@ -31,17 +31,14 @@ class DBWorker:
 		result = self.cursor.fetchone()
 		if result == None:
 			query = "INSERT INTO stoks (user_id, company) VALUES({id},'{company}')".format(id = id, company = str(company).upper())
-			print(query)
 			self.cursor.execute(query)
 			self.conn.commit()
 		else:
 			query = "SELECT company FROM stoks WHERE user_id = {id}".format(id = id)
 			self.cursor.execute(query)
 			prev_company = set(self.cursor.fetchone()[0].split(','))
-			print(prev_company)
 			prev_company.add(company.upper())
 			query = "UPDATE stoks SET company = '{company}' WHERE user_id = {id}".format(company = prev_company, id = id)
-			print(query)
 			self.cursor.execute(query)
 			self.conn.commit()
 		self.close_connection()
@@ -54,7 +51,6 @@ class DBWorker:
 		try:
 			ex_company.remove(company.upper())
 			query = "UPDATE stoks SET company = '{company}' WHERE user_id = {id}".format(company = ','.join(ex_company), id = id)
-			print(query)
 			self.cursor.execute(query)
 			result = 'Succses'
 		except:
@@ -71,6 +67,15 @@ class DBWorker:
 		companys = self.cursor.fetchone()[0].split(',')
 		self.close_connection()
 		return companys
+
+	def all_data(self):
+		self.open_connection()
+		query = "SELECT user_id, dat FROM stoks WHERE dat <> 'NULL'" 
+		self.cursor.execute(query)
+		dates = self.cursor.fetchall()
+		self.close_connection()
+		return dates
+		
 
 	def insert_date(self, id, dat):
 		self.open_connection()
