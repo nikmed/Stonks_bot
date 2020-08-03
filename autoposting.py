@@ -3,29 +3,16 @@ import dbworker
 from datetime import time, datetime
 import requests
 import json
+import yahoo_parser
 
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
 db = dbworker.DBWorker()
 
 
 #Emoji codes
-STONKS = b'\xF0\x9F\x93\x88'
+STONKS_UP = b'\xF0\x9F\x93\x88'
+STONKS_DOWN = b'\xF0\x9F\x93\x89'
 MONEY = b'\xF0\x9F\x92\xB8'
-
-
-def request(symbol):
-	url = "https://stockexchangeapi.p.rapidapi.com/price/{sym}".format(sym = symbol)
-	headers = {
-    	'x-rapidapi-host': "stockexchangeapi.p.rapidapi.com",
-    	'x-rapidapi-key': "0f0c2f6bf5msh5c1fd736fa37043p1bd0f4jsn0a126ab7fb44"
-    	}
-	response = requests.request("GET", url, headers=headers)
-	print(response.text)
-	try:
-		result = json.loads(response.text)
-		return result
-	except:
-		return 'Error'
 
 
 def time_sort(s): 
@@ -49,8 +36,12 @@ def format_message(user_id):
 	for i in db.all_company(user_id):
 		print(i)
 		try:
-			req = request(i)
-			message += STONKS.decode('utf-8') + req['symbolName'] + " " + MONEY.decode('utf-8') + req['price'] + '\n'
+			r = yahoo_parser.get_price()
+			if r != 'Error':
+				if r[2][0] == '-':
+					message += STONKS_DOWN.decode('utf-8') + r[0] + " " + MONEY.decode('utf-8') + r[1] + ' ' + r[2]  '\n'
+				else:
+					message += STONKS_UP.decode('utf-8') + r[0] + " " + MONEY.decode('utf-8') + r[1] + ' ' + r[2]  '\n'
 		except Exception as e:
 			print(e)
 	return message
