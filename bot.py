@@ -9,9 +9,9 @@ from multiprocessing import Process
 from time import sleep
 import os
 from flask import Flask, request
+import logging
 
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
-
 
 #Emoji codes
 STONKS_UP = b'\xF0\x9F\x93\x88'
@@ -134,17 +134,19 @@ def callback_worker(call):
 # Проверим, есть ли переменная окружения Хероку (как ее добавить смотрите ниже)
 if "HEROKU" in list(os.environ.keys()):
     logger = telebot.logger
+    telebot.logger.setLevel(logging.INFO)
 
     server = Flask(__name__)
-    @server.route("/bot", methods=['POST'])
+    @server.route('/' + TOKEN, methods=['POST'])
     def getMessage():
-        bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-        return "!", 200
-    @server.route("/")
+    	bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    	return "!", 200
+    @server.route('/')
     def webhook():
-        bot.remove_webhook()
-        bot.set_webhook(url="https://stonks13bot.herokuapp.com/") # этот url нужно заменить на url вашего Хероку приложения
-        return "?", 200
+    	bot.remove_webhook()
+    	bot.set_webhook(url='https://stonks13bot.herokuapp.com/' + TOKEN)
+    	return "!", 200
+
     server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
 else:
     # если переменной окружения HEROKU нету, значит это запуск с машины разработчика.  
