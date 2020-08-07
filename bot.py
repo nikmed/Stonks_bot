@@ -11,7 +11,6 @@ import os
 from flask import Flask, request
 
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
-server = Flask(__name__)
 
 
 #Emoji codes
@@ -144,7 +143,7 @@ if "HEROKU" in list(os.environ.keys()):
     @server.route("/")
     def webhook():
         bot.remove_webhook()
-        bot.set_webhook(url="https://stonks13bot.herokuapp.com") # этот url нужно заменить на url вашего Хероку приложения
+        bot.set_webhook(url="https://stonks13bot.herokuapp.com/" + TOKEN) # этот url нужно заменить на url вашего Хероку приложения
         return "?", 200
     server.run(host="0.0.0.0", port=os.environ.get('PORT', 80))
 else:
