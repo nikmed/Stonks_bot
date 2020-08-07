@@ -7,8 +7,11 @@ import re
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from multiprocessing import Process
 from time import sleep
+from flask import Flask, request
 
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
+server = Flask(__name__)
+
 
 #Emoji codes
 STONKS_UP = b'\xF0\x9F\x93\x88'
@@ -124,7 +127,12 @@ def callback_worker(call):
 	global user_id
 	db.insert_company(user_id, call.data)
 	
-try:
-	bot.polling()
-except Exception as e:
-	print(e)
+
+
+if __name__ == "__main__":
+	server.debug = True
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+	try:
+		bot.polling()
+	except Exception as e:
+		print(e)
