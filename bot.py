@@ -135,7 +135,6 @@ def callback_worker(call):
 # Проверим, есть ли переменная окружения Хероку (как ее добавить смотрите ниже)
 if "HEROKU" in list(os.environ.keys()):
     logger = telebot.logger
-    telebot.logger.setLevel(logging.INFO)
 
     server = Flask(__name__)
     @server.route("/bot", methods=['POST'])
