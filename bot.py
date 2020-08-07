@@ -132,7 +132,7 @@ def callback_worker(call):
 
 
 # Проверим, есть ли переменная окружения Хероку (как ее добавить смотрите ниже)
-if "HEROKU" in list(os.environ.keys()):
+if not "HEROKU" in list(os.environ.keys()):
     logger = telebot.logger
     telebot.logger.setLevel(logging.INFO)
 
