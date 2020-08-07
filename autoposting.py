@@ -60,5 +60,5 @@ if __name__ == "__main__":
 		tm1 = dates[0][1]
 		t1 = int(tm1.split(':')[0]) * 60 + int(tm1.split(':')[1])
 		t2 = 1440
-	if abs(t - int(t1)) < 10 or abs(t - int(t2)) < 10:
+	if abs(t - int(t1)) < 20 or abs(t - int(t2)) < 20:
 		bot.send_message(dates[0][0], format_message(dates[0][0]))
