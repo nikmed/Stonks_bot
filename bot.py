@@ -38,8 +38,8 @@ def stop(message):
 @bot.message_handler(commands=['settings'])
 def settings(message):
 	for i in db.all_company(message.chat.id):
-		message += i + '\n'
-		bot.send_message(message.chat.id, message)
+		answer += str(i) + '\n'
+		bot.send_message(message.chat.id, answer)
 
 @bot.message_handler(commands=['delete'])
 def delete_company(message):
