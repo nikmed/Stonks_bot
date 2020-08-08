@@ -37,6 +37,7 @@ def stop(message):
 
 @bot.message_handler(commands=['settings'])
 def settings(message):
+	answer = ''
 	for i in db.all_company(message.chat.id):
 		answer += str(i) + '\n'
 		bot.send_message(message.chat.id, answer)
