@@ -37,7 +37,7 @@ def stop(message):
 
 @bot.message_handler(commands=['settings'])
 def settings(message):
-	for i in all_company(message.chat.id):
+	for i in db.all_company(message.chat.id):
 		message += i + '\n'
 		bot.send_message(message.chat.id, message)
 
@@ -51,7 +51,7 @@ def delete_company(message):
 		if res == 'Error':
 			answer = 'Ошибка при удалении.'
 		else:
-			answer = 'Успех. Компания {sym} была удалена.'.format(message.text.split()[1].upper())
+			answer = 'Успех. Компания {sym} была удалена.'.format(sym = message.text.split()[1].upper())
 		bot.send_message(message.chat.id, answer)
 
 
