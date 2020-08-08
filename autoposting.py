@@ -4,7 +4,10 @@ from datetime import time, datetime
 import requests
 import json
 import yahoo_parser
+from apscheduler.schedulers.blocking import BlockingScheduler
 
+
+sched = BlockingScheduler()
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
 db = dbworker.DBWorker()
 
@@ -15,10 +18,13 @@ STONKS_DOWN = b'\xF0\x9F\x93\x89'
 MONEY = b'\xF0\x9F\x92\xB8'
 
 
+
+
+
 def time_sort(s): 
 	t = datetime.now().timetuple()
 	time_minutes = t.tm_hour * 60 + t.tm_min
-	times = s[1].split(',')
+	times = s[1].split(' ')
 	t1 = int(times[0].split(':')[0]) * 60 + int(times[0].split(':')[1])
 	delta1 = (t1 - time_minutes)
 	if len(times) > 1:
@@ -36,29 +42,31 @@ def format_message(user_id):
 	for i in db.all_company(user_id):
 		print(i)
 		try:
-			r = yahoo_parser.get_price()
+			r = yahoo_parser.get_price(i)
 			if r != 'Error':
 				if r[2][0] == '-':
-					message += STONKS_DOWN.decode('utf-8') + r[0] + " " + MONEY.decode('utf-8') + r[1] + ' ' + r[2]  '\n'
+					message += STONKS_DOWN.decode('utf-8') + r[0] + " " + '\n' + MONEY.decode('utf-8') + r[1] + ' ' + r[2] + '\n' + '\n' 
 				else:
-					message += STONKS_UP.decode('utf-8') + r[0] + " " + MONEY.decode('utf-8') + r[1] + ' ' + r[2]  '\n'
+					message += STONKS_UP.decode('utf-8') + r[0] + " " + '\n' + MONEY.decode('utf-8') +  r[1] + ' ' + r[2] + '\n' + '\n'
 		except Exception as e:
 			print(e)
 	return message
 
-
-if __name__ == "__main__":
+@sched.scheduled_job('interval', minutes=5)
+def timed_job():
 	bot = telebot.TeleBot(TOKEN)
 	dates = sorted(db.all_data(), key = lambda x: time_sort(x))
 	time_all = datetime.now().timetuple()
 	t = time_all.tm_hour * 60 + time_all.tm_min
-	if len(dates[0][1].split(',')) > 1:
-		tm1 , tm2 = dates[0][1].split(',')
-		t1 = int(tm1.split(':')[0]) * 60 + int(tm1.split(':')[1])
-		t2 = int(tm2.split(':')[0]) * 60 + int(tm2.split(':')[1])
-	else:
-		tm1 = dates[0][1]
-		t1 = int(tm1.split(':')[0]) * 60 + int(tm1.split(':')[1])
-		t2 = 1440
-	if abs(t - int(t1)) < 20 or abs(t - int(t2)) < 20:
-		bot.send_message(dates[0][0], format_message(dates[0][0]))
+	i = 0
+	while len(dates) > i and time_sort(dates[i]) <= 5:
+		try:
+			bot.send_message(dates[i][0], format_message(dates[i][0]))
+		except Exception as e:
+			print(e)
+		i += 1
+
+
+
+if __name__ == "__main__":
+	sched.start()
