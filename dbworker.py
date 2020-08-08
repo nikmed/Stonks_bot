@@ -38,7 +38,7 @@ class DBWorker:
 			self.cursor.execute(query)
 			prev_company = set(self.cursor.fetchone()[0].split(','))
 			prev_company.add(company.upper())
-			query = "UPDATE stoks SET company = '{company}' WHERE user_id = {id}".format(company = prev_company, id = id)
+			query = "UPDATE stoks SET company = '{company}' WHERE user_id = {id}".format(company = ','.join(str(s) for s in prev_company), id = id)
 			self.cursor.execute(query)
 			self.conn.commit()
 		self.close_connection()
