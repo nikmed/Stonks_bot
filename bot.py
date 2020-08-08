@@ -37,15 +37,23 @@ def stop(message):
 
 @bot.message_handler(commands=['settings'])
 def settings(message):
-	pass
+	for i in all_company(message.chat.id):
+		message += i + '\n'
+		bot.send_message(message.chat.id, message)
 
 @bot.message_handler(commands=['delete'])
 def delete_company(message):
 	if (len(message.text.split()) <= 1):
-		bot.send_message(message.chat.id, 'Чтобы удалить компанию из рассылки необходимо написать /delete "абривеатура компании"')
+		bot.send_message(message.chat.id, 'Чтобы удалить компанию из рассылки необходимо написать /delete "аббривеатура компании"')
 	else:
 		print(message.text.split()[1])
-		print(db.delete_company(message.chat.id, message.text.split()[1]))
+		res = db.delete_company(message.chat.id, message.text.split()[1])
+		if res == 'Error':
+			answer = 'Ошибка при удалении.'
+		else:
+			answer = 'Успех. Компания {sym} была удалена.'.format(message.text.split()[1].upper())
+		bot.send_message(message.chat.id, answer)
+
 
 @bot.message_handler(commands=['schedule'])
 def start_message(message):
@@ -132,7 +140,7 @@ def callback_worker(call):
 
 
 # Проверим, есть ли переменная окружения Хероку (как ее добавить смотрите ниже)
-if not "HEROKU" in list(os.environ.keys()):
+if "HEROKU" in list(os.environ.keys()):
     logger = telebot.logger
     telebot.logger.setLevel(logging.INFO)
 
