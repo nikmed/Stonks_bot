@@ -140,9 +140,7 @@ def callback_worker(call):
 	db.insert_company(user_id, call.data)
 	
 
-while True:
-	try: 
+if __name__ == "__main__":
 		bot.polling(none_stop=True)
-	except Exception as e:
-		print(e)
+
 
