@@ -126,10 +126,11 @@ def send_text(message):
 			markup = InlineKeyboardMarkup()
 			add_to_list = InlineKeyboardButton('Подписаться', callback_data = message.text)
 			markup.add(add_to_list)
-			if j[2][0] == "-":
-				bot.send_message(message.chat.id, STONKS_DOWN.decode('utf-8') + j[0] + '\n' + MONEY.decode('utf-8') +j[1] + ' ' + j[2], reply_markup = markup)
-			else:
-				bot.send_message(message.chat.id, STONKS_UP.decode('utf-8') + j[0] + '\n' + MONEY.decode('utf-8') +j[1] + ' ' + j[2], reply_markup = markup)
+			if j[2] != None:
+				if j[2][0] == "-":
+					bot.send_message(message.chat.id, STONKS_DOWN.decode('utf-8') + j[0] + '\n' + MONEY.decode('utf-8') +j[1] + ' ' + j[2], reply_markup = markup)
+				else:
+					bot.send_message(message.chat.id, STONKS_UP.decode('utf-8') + j[0] + '\n' + MONEY.decode('utf-8') +j[1] + ' ' + j[2], reply_markup = markup)
 
 	
 

@@ -4,10 +4,8 @@ from datetime import time, datetime
 import requests
 import json
 import yahoo_parser
-from apscheduler.schedulers.blocking import BlockingScheduler
 
 
-sched = BlockingScheduler()
 TOKEN = '1389715736:AAE5tnOA2sSLz16QgACPmJ4xH3-8aXwGghI'
 db = dbworker.DBWorker()
 
@@ -52,8 +50,8 @@ def format_message(user_id):
 			print(e)
 	return message
 
-@sched.scheduled_job('interval', minutes=5)
-def timed_job():
+
+if __name__ == "__main__":
 	bot = telebot.TeleBot(TOKEN)
 	dates = sorted(db.all_data(), key = lambda x: time_sort(x))
 	time_all = datetime.now().timetuple()
@@ -65,8 +63,3 @@ def timed_job():
 		except Exception as e:
 			print(e)
 		i += 1
-
-
-
-if __name__ == "__main__":
-	sched.start()
