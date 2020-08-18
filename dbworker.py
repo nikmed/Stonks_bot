@@ -8,7 +8,7 @@ class DBWorker:
 
 	def open_connection(self):
 		if not self.connected:
-			self.conn = sqlite3.connect(self.dbname, check_same_thread = False)
+			self.conn = sqlite3.connect('/' + self.dbname, check_same_thread = False)
 			self.cursor = self.conn.cursor()
 			self.connected = True
 
