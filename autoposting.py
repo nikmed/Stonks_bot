@@ -29,10 +29,17 @@ def time_sort(s):
 		t2 = int(times[1].split(':')[0]) * 60 + int(times[1].split(':')[1])
 		delta2 = t2 - time_minutes
 		if delta1 > 0 and delta2 > 0:
-			return delta1 if delta2 == None or delta2 > delta1 and delta1 > 0 else delta2
+			return delta1 if delta1 < delta2 else delta2
 		else:
-			return 1440	
-	return delta1 if delta1 > 0 else 1440
+			if delta1 < 0 and delta2 < 0:
+				return 1440
+			else:
+				if delta1 > 0:
+					return delta1
+				elif delta2 > 0:
+					return delta2
+	else:
+		return delta1 if delta1 > 0 else 1440
 
 
 def format_message(user_id):
